@@ -1,0 +1,6 @@
+{
+  "type": "commonjs",
+  "dependencies": {
+    "madlanidev": "^1.0.2"
+  }
+}
