@@ -1,0 +1,13 @@
+POST / HTTP/1.1
+Host: 192.168.192.182:4000
+Connection: keep-alive
+Content-Length: 11
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+Content-Type: text/plain;charset=UTF-8
+Accept: */*
+Origin: http://127.0.0.1:5500
+Referer: http://127.0.0.1:5500/
+Accept-Encoding: gzip, deflate
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8
+
+12345678890
