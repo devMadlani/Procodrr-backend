@@ -1,8 +1,7 @@
 import express from "express";
 import multer from "multer";
 import path from "path";
-const app = express();
-const PORT = 4000;
+import cors from "cors";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -18,9 +17,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.get("/", (req, res) => {
-  res.send("Hello, world!");
-});
+const app = express();
+const PORT = 4000;
+
+app.use(cors());
 
 // Single File
 // app.post("/upload", upload.single("profilePic"), (req, res) => {
@@ -32,8 +32,8 @@ app.get("/", (req, res) => {
 app.post(
   "/upload",
   upload.fields([
-    { name: "profilePic", maxCount: 1 },
-    { name: "bg", maxCount: 2 },
+    { name: "profilePics", maxCount: 1 },
+    { name: "bg", maxCount: 5 },
   ]),
   (req, res) => {
     console.log(req.files);
