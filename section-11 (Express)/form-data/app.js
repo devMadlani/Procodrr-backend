@@ -3,9 +3,9 @@ import express from "express";
 const app = express();
 
 app.use(express.static("public"));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.text());
-app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+// app.use(express.text());
+// app.use(express.json());
 
 app.post("/user", (req, res) => {
   req.on("data", (chunk) => {
