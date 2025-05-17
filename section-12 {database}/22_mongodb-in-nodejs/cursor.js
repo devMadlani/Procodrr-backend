@@ -9,8 +9,8 @@ const collection = db.collection("todos");
 
 // const data = [];
 
-// for (let i = 0; i < 2; i++) {
-//   data.push({ title: `user ${i}`, isActive: i % 2 === 0 });
+// for (let i = 1; i <= 25; i++) {
+//   data.push({ title: `task ${i}`, completed: i % 2 === 0 });
 // }
 
 // await collection.insertMany(data);
