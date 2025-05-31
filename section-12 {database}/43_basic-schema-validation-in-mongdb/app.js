@@ -4,6 +4,7 @@ const client = new MongoClient("mongodb://127.0.0.1:27017");
 await client.connect();
 
 const db = client.db();
+const collection = db.collection("users");
 
 // const collection = await db.createCollection("users", {
 //   validator: {
@@ -36,29 +37,62 @@ const db = client.db();
 //   validationLevel: "strict",
 // });
 
-await db.command({
-  collMod: "users",
-  validator: {
-    name: {
-      $type: "string",
-    },
-    age: {
-      $type: "int",
-      $gte: 18,
-      $lte: 80,
-    },
-  },
-  validationAction: "warn",
-  validationLevel: "off",
-});
+// $jsonSchema validator
+// await db.command({
+//   collMod: "users",
+//   validator: {
+//     $jsonSchema: {
+//       required: ["name", "age"],
+//       properties: {
+//         _id: {
+//           bsonType: "objectId",
+//         },
+//         name: {
+//           bsonType: "string",
+//           minLength: 3,
+//           maxLength: 20,
+//         },
+//         age: {
+//           bsonType: "int",
+//           minimum: 18,
+//           maximum: 80,
+//         },
+//       },
+//       additionalProperties: false,
+//     },
+//   },
+//   validationAction: "error",
+//   validationLevel: "off",
+// });
 
-const collections = await db.listCollections().toArray();
-console.log(collections[0].options);
+// const result = await db.command({
+//   validate: "users",
+// });
 
-// try {
-//   await collection.insertOne({ age: 80 });
-// } catch (err) {
-//   console.log(err);
-// }
+// console.log(result);
+
+const collectionInfo = await db.listCollections({ name: "users" }).toArray();
+const jsonSchema = collectionInfo[0]?.options?.validator.$jsonSchema;
+
+const invalidDocuments = await collection
+  .find({
+    $nor: [
+      {
+        $jsonSchema: jsonSchema,
+      },
+    ],
+  })
+  .toArray();
+console.log(invalidDocuments);
 
 client.close();
+
+// MongoSh
+// db.users.find({
+//   $nor: [
+//     {
+//       $jsonSchema: db.getCollectionInfos({ name: "users" })[0].options.validator
+//         .$jsonSchema,
+//     },
+//   ],
+// });
