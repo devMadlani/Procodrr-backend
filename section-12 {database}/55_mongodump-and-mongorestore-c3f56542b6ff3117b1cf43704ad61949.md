@@ -10,6 +10,15 @@ The `mongodump` command is used to create a backup of a MongoDB database. It ext
 mongodump [options]
 ```
 
+### MongoDump Example
+
+    - mongodump --host 127.0.0.1 --posr 27017 --out <pathname> --db  storageApp
+    - mongodump --host 127.0.0.1 --posr 27017 --out <pathname> --db  storageApp --gzip
+    - mongorestore --host 127.0.0.1 --posr 27017 --dir <pathname> --db  storageApp
+    - mongorestore --host 127.0.0.1 --posr 27017 --dir <pathname> --db  storageApp --gzip
+
+### MongoDRestart Example
+
 ### Common Options
 
 | Option                              | Description                                                               |
