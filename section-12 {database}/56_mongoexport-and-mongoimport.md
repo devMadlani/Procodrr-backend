@@ -30,6 +30,7 @@ mongoexport [options]
 1. **Export a collection to a JSON file**
 ```sh
 mongoexport --db mydatabase --collection users --out users.json
+mongoexport --db mydatabase --collection users --out users.json --jsonArray
 ```
 
 2. **Export a collection to a CSV file**
