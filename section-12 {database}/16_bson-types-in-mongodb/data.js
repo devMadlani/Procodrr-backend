@@ -20,3 +20,5 @@ const users = [
     age: 28,
   },
 ];
+
+// db.test.find({info :{$type:"object"}})
