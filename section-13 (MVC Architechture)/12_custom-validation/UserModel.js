@@ -32,6 +32,7 @@ const userSchema = new Schema(
     hobbies: [String],
     parentId: {
       type: Schema.Types.ObjectId,
+      ref: "User",
       required: function () {
         return this.age < 16;
       },
