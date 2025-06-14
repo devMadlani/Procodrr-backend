@@ -44,12 +44,15 @@ const userSchema = new Schema(
 );
 const User = mongoose.model("User", userSchema);
 
-const data = await User.insertOne({
-  name: "krishna",
-  age: 13,
-  email: "krishna@gmail.com",
-  hobbies: ["coding", "sleeping"],
-  parentId: "684cd69af56955db9c79d9e8",
-});
-console.log(data);
-console.log("running UserModel.js");
+// const data = await User.insertOne({
+//   name: "krishna",
+//   age: 13,
+//   email: "krishna@gmail.com",
+//   hobbies: ["coding", "sleeping"],
+//   parentId: "684cd69af56955db9c79d9e8",
+// });
+// console.log(data);
+
+// console.log("running UserModel.js");
+
+export default User;
