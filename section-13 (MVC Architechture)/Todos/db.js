@@ -1,16 +1,15 @@
-import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 
-export const client = new MongoClient("mongodb://localhost:27017/todoApps");
-
-export async function connectDB() {
-  await client.connect();
-  const db = client.db();
+try {
+  await mongoose.connect("mongodb://localhost:27017/todoApps");
   console.log("Database connected");
-  return db;
+} catch (error) {
+  console.log(error.message);
+  process.exit(1);
 }
 
 process.on("SIGINT", async () => {
-  await client.close();
+  await mongoose.disconnect();
   console.log("Client Disconnected!");
   process.exit(0);
 });
