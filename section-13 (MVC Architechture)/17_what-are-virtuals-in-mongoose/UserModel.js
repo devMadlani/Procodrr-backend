@@ -63,9 +63,17 @@ const userSchema = new Schema(
         return `${this.name} is ${this.age} years old.`;
       },
     },
+    statics: {
+      findOneByName(name) {
+        return this.findOne({ name });
+      },
+    },
   }
 );
 
+userSchema.statics.findByEmail = function (email) {
+  return this.findOne({ email });
+};
 userSchema.methods.sayHi = function () {
   return `Hi, my name is ${this.name}`;
 };

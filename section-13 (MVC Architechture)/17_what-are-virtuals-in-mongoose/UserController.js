@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
 import User from "./UserModel.js";
 
-const user = await User.findOne({ email: "krishna@gmail.com" });
+// const user = await User.findOne({ email: "krishna@gmail.com" });
+// const user = await User.findOneByName("krishna");
+const user = await User.findByEmail("dev@gmail.com");
 
 // user.hobbiesStr = "writing, sleeping, coding";
 
