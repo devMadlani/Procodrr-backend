@@ -5,7 +5,9 @@ const user = await User.findOne({ email: "krishna@gmail.com" });
 
 // user.hobbiesStr = "writing, sleeping, coding";
 
-console.log(user.toObject());
+console.log(user.getSummry());
+console.log(user.sayHi());
+// console.log(user.toObject());
 // console.log(user.emailDomain);
 // console.log(user.isAdult);
 // console.log(user.hobbies);

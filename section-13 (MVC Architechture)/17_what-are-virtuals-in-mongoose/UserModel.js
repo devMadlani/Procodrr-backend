@@ -58,15 +58,17 @@ const userSchema = new Schema(
         },
       },
     },
-    toJSON: {
-      virtuals: true,
-    },
-    toObject: {
-      virtuals: true,
+    methods: {
+      getSummry() {
+        return `${this.name} is ${this.age} years old.`;
+      },
     },
   }
 );
 
+userSchema.methods.sayHi = function () {
+  return `Hi, my name is ${this.name}`;
+};
 userSchema.virtual("emailDomain").get(function () {
   return this.email.split("@")[1];
 });
