@@ -72,6 +72,15 @@ const userSchema = new Schema(
 //   console.log("hii");
 // });
 
+//Model Middleware
+userSchema.pre("insertMany", function (next, docs) {
+  for (const doc of docs) {
+    doc.password = doc.name + doc.age;
+  }
+  console.log(docs);
+  next();
+});
+
 const User = model("User", userSchema);
 
 export default User;

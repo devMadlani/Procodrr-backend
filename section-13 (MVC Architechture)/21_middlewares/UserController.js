@@ -1,7 +1,16 @@
 import User from "./UserModel.js";
 
-const user = await User.findOne({ name: "het" });
-const use2 = await User.find({ name: "het" });
+const result = await User.insertMany([
+  {
+    name: "het",
+    age: 44,
+    email: "het@gmail.com",
+  },
+  {
+    name: "vikas",
+    age: 44,
+    email: "vikas@gmail.com",
+  },
+]);
 
-// console.log(user);
-// console.log(use2);
+// console.log(result);
