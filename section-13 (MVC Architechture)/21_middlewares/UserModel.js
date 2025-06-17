@@ -47,17 +47,31 @@ const userSchema = new Schema(
   }
 );
 
-userSchema.pre("save", function () {
-  // console.log("Running my document middleware 1");
-  this.password = this.name + this.age;
-  // console.log(this);
-});
+// Document Middleware
+// userSchema.pre("save", function () {
+//   this.password = this.name + this.age;
+// });
 
-userSchema.post("save", function (doc) {
-  console.log(
-    `Your account is created successfully and your password is ${doc.password}`
-  );
-});
+// userSchema.post("save", function (doc) {
+//   console.log(
+//     `Your account is created successfully and your password is ${doc.password}`
+//   );
+// });
+
+// Query Middleware
+// userSchema.pre(["find", "findOne"], function () {
+//   this.find({ age: { $gte: 40 } }).select("name");
+// });
+
+// userSchema.pre(/^find/, function () {
+//   this.find({ age: { $gte: 40 } }).select("name");
+// });
+
+// userSchema.post(/^find/, function (doc) {
+//   console.log(doc);
+//   console.log("hii");
+// });
+
 const User = model("User", userSchema);
 
 export default User;

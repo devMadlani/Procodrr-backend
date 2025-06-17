@@ -1,9 +1,7 @@
 import User from "./UserModel.js";
 
-const user = await User.create({
-  name: "darshu",
-  age: 30,
-  email: "darshu@gmail.com",
-});
+const user = await User.findOne({ name: "het" });
+const use2 = await User.find({ name: "het" });
 
-user.save();
+// console.log(user);
+// console.log(use2);
