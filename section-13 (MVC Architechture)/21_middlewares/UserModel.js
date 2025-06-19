@@ -44,6 +44,8 @@ const userSchema = new Schema(
   {
     strict: "throw",
     timestamps: true,
+
+    optimisticConcurrency: true, // It tells mongoose that in our project we concurrently update the document so need to check the verson on every field update not just for array
   }
 );
 
