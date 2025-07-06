@@ -1,6 +1,7 @@
 import express from "express";
 import User from "../models/User.js";
 import Session from "../models/Session.js";
+import Cart from "../models/Cart.js";
 
 const router = express.Router();
 
@@ -57,6 +58,9 @@ router.post("/login", async (req, res) => {
     if (session) {
       session.expires = Math.round(Date.now() / 1000) + 60 * 60 * 24 * 30;
       session.userId = user._id;
+
+      await Cart.create({ userId: user._id, courses: session.data.cart });
+      session.data = {};
       await session.save();
 
       res.cookie("sid", session.id, {
