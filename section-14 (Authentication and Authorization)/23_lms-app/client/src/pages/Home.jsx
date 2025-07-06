@@ -2,14 +2,8 @@ import CourseCard from "../components/CourseCard";
 import { getAllCoursesApi } from "../api/courseApi";
 import { useEffect, useState } from "react";
 
+const courses = await getAllCoursesApi();
 export default function Home() {
-  const [courses, setCourses] = useState([]);
-  useEffect(() => {
-    (async () => {
-      const courses = await getAllCoursesApi();
-      setCourses(courses);
-    })();
-  }, []);
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">

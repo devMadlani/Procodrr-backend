@@ -1,12 +1,15 @@
 import { useState } from "react";
+import { register } from "../api/authApi";
+import { useNavigate } from "react-router-dom";
 export default function Register() {
-  const [name, setName] = useState("Shubham Semwal");
-  const [email, setEmail] = useState("shubham@gmail.com");
-  const [password, setPassword] = useState("shubham@123");
-
-  const handleSubmit = (e) => {
+  const [name, setName] = useState("Dev Madlani");
+  const [email, setEmail] = useState("dev@gmail.com");
+  const [password, setPassword] = useState("dev@123");
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ name, email, password });
+    const data = await register({ name, email, password });
+    navigate("/login");
   };
 
   return (

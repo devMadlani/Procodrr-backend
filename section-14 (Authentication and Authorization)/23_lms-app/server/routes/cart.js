@@ -7,8 +7,9 @@ const router = express.Router();
 // GET cart
 router.get("/", async (req, res) => {
   const sessionId = req.signedCookies.sid;
+  console.log(sessionId);
   const session = await Session.findById(sessionId);
-  const courseIds = session.data.cart.map(({ courseId }) => courseId);
+  const courseIds = session?.data.cart.map(({ courseId }) => courseId);
   const courses = await Course.find({ _id: { $in: courseIds } });
   const cartCourses = courses.map((course) => {
     const { name, image, price, id } = course;

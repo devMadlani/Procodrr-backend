@@ -11,15 +11,22 @@ import {
 import { Fragment, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getCartApi } from "../api/cartApi";
+import { getProfileInfo } from "../api/authApi";
 
 export default function Navbar({ darkMode, toggleDarkMode }) {
   const { cartCount } = useCart();
-  const { user, logout } = useAuth();
+  const { user, setUser } = useAuth();
   const { setCart } = useCart();
   useEffect(() => {
     (async () => {
-      const data = await getCartApi();
-      setCart(data);
+      try {
+        const userInfo = await getProfileInfo();
+        setUser(userInfo);
+        const data = await getCartApi();
+        setCart(data);
+      } catch (error) {
+        console.log(error);
+      }
     })();
   }, []);
 
@@ -88,7 +95,6 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
                         </div>
                         <MenuItem>
                           <button
-                            onClick={logout}
                             className={`group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:dark:bg-white/10 data-[focus]:bg-gray-200 dark:text-gray-200`}
                           >
                             Sign out
