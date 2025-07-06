@@ -23,7 +23,6 @@ router.get("/", async (req, res) => {
       quantity,
     };
   });
-  console.log(cartCourses);
   res.status(200).json(cartCourses || []);
 });
 
@@ -50,7 +49,14 @@ router.post("/", async (req, res) => {
 
 // Remove course from cart
 router.delete("/:courseId", async (req, res) => {
-  //Add your code here
+  const sessionId = req.signedCookies.sid;
+  const courseId = req.params.courseId;
+  const result = await Session.updateOne(
+    { _id: sessionId },
+    { $pull: { "data.cart": { courseId } } }
+  );
+  console.log(result);
+  res.status(200).json({ message: "Course removed from cart" });
 });
 
 export default router;

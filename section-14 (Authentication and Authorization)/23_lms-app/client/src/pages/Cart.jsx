@@ -1,16 +1,9 @@
 import { useCart } from "../context/CartContext";
 import CartItem from "../components/CartItem";
-import { getCartApi } from "../api/cartApi";
-import { useEffect } from "react";
 
 export default function Cart() {
-  const { cart, setCart } = useCart();
-  useEffect(() => {
-    (async () => {
-      const data = await getCartApi();
-      setCart(data);
-    })();
-  }, []);
+  const { cart } = useCart();
+  console.log(cart);
   const total = cart.reduce(
     (sum, item) => sum + item.price * (item.quantity || 1),
     0

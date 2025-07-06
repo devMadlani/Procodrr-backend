@@ -9,3 +9,8 @@ export const getCartApi = async () => {
   const { data } = await axiosInstance.get("/cart");
   return data;
 };
+
+export const deleteCartItem = async (courseId) => {
+  const { data } = await axiosInstance.delete(`/cart/${courseId}`);
+  return data;
+};
