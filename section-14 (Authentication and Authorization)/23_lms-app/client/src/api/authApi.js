@@ -10,6 +10,11 @@ export const login = async (userData) => {
   return data;
 };
 
+export const logout = async () => {
+  const { data } = await axiosInstance.post("auth/logout");
+  return data;
+};
+
 export const getProfileInfo = async () => {
   const { data } = await axiosInstance.get("auth/profile");
   return data;

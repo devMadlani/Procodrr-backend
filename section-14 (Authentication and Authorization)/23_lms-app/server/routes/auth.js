@@ -58,11 +58,26 @@ router.post("/login", async (req, res) => {
     if (session) {
       session.expires = Math.round(Date.now() / 1000) + 60 * 60 * 24 * 30;
       session.userId = user._id;
-
-      await Cart.create({ userId: user._id, courses: session.data.cart });
+      const cart = await Cart.findOne({ userId: user._id });
+      if (cart) {
+        const cartCourse = [...cart.courses];
+        for (const course of session.data.cart) {
+          const existingCourse = cartCourse.find(
+            (c) => c.courseId?.toString() === course.courseId.toString()
+          );
+          if (existingCourse) {
+            existingCourse.quantity += course.quantity || 1;
+          } else {
+            cartCourse.push({ ...course, quantity: course.quantity || 1 });
+          }
+        }
+        cart.courses = cartCourse;
+        await cart.save();
+      } else {
+        await Cart.create({ userId: user._id, courses: session.data.cart });
+      }
       session.data = {};
       await session.save();
-
       res.cookie("sid", session.id, {
         httpOnly: true,
         signed: true,
@@ -100,6 +115,11 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/logout", async (req, res) => {
+  const sessionId = req.signedCookies.sid;
+  await Session.findByIdAndDelete(sessionId);
+  res.status(200).json({ message: "Logged out successfully" });
+});
 router.get("/profile", async (req, res) => {
   try {
     const sessionId = req.signedCookies.sid;

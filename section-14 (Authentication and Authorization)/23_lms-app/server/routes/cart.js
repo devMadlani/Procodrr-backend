@@ -57,11 +57,13 @@ router.post("/", async (req, res) => {
       },
       { $inc: { "courses.$.quantity": 1 } }
     );
+    console.log(result);
     if (result.matchedCount === 0) {
-      await Cart.updateOne(
-        { serId: session.userId },
+      const a = await Cart.updateOne(
+        { userId: session.userId },
         { $push: { courses: { courseId, quantity: 1 } } }
       );
+      console.log(a);
     }
     return res.status(201).json({ message: "Course added to cart" });
   }
@@ -85,11 +87,18 @@ router.post("/", async (req, res) => {
 router.delete("/:courseId", async (req, res) => {
   const sessionId = req.signedCookies.sid;
   const courseId = req.params.courseId;
-  const result = await Session.updateOne(
-    { _id: sessionId },
-    { $pull: { "data.cart": { courseId } } }
-  );
-  console.log(result);
+  const session = await Session.findById(sessionId);
+  if (session.userId) {
+    await Cart.updateOne(
+      { userId: session.userId },
+      { $pull: { courses: { courseId } } }
+    );
+  } else {
+    await Session.updateOne(
+      { _id: sessionId },
+      { $pull: { "data.cart": { courseId } } }
+    );
+  }
   res.status(200).json({ message: "Course removed from cart" });
 });
 

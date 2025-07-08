@@ -11,7 +11,7 @@ import {
 import { Fragment, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getCartApi } from "../api/cartApi";
-import { getProfileInfo } from "../api/authApi";
+import { getProfileInfo, logout } from "../api/authApi";
 
 export default function Navbar({ darkMode, toggleDarkMode }) {
   const { cartCount } = useCart();
@@ -95,6 +95,10 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
                         </div>
                         <MenuItem>
                           <button
+                            onClick={async () => {
+                              await logout();
+                              window.location.reload();
+                            }}
                             className={`group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:dark:bg-white/10 data-[focus]:bg-gray-200 dark:text-gray-200`}
                           >
                             Sign out
