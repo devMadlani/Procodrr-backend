@@ -128,7 +128,10 @@ router.get("/profile", async (req, res) => {
     if (!session || !session.userId) {
       return res.status(401).json({ message: "User not logged in" });
     }
-
+    if (session.expires < Math.round(Date.now() / 1000)) {
+      session.deleteOne();
+      return res.status(401).json({ message: "User not logged in" });
+    }
     const user = await User.findById(session.userId).lean();
 
     return res.json({
