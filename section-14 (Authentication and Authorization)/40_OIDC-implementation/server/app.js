@@ -29,8 +29,17 @@ app.post("/auth/google/callback", async (req, res) => {
   const newUer = { id: sub, email, name, picture };
   const existinUser = users.find(({ id }) => id === sub);
   if (existinUser) {
+    const existingSessionIndex = sessions.findIndex(
+      ({ userId }) => userId === sub
+    );
     const sessionID = crypto.randomUUID();
-    sessions.push({ sessionID, userId: sub });
+
+    if (existingSessionIndex === -1) {
+      sessions.push({ sessionID, userId: sub });
+    }
+    else{
+      sessions[existingSessionIndex].sessionID = sessionID;
+    }
     await writeFile("./sessionDB.json", JSON.stringify(sessions, null, 2));
     res.cookie("sid", sessionID, {
       maxAge: 1000 * 60 * 60 * 24,
@@ -61,6 +70,14 @@ app.get("/profile", (req, res) => {
     return res.status(404).json({ message: "User not founds" });
   }
   return res.status(200).json({ data: existinUser });
+});
+
+app.post("/logout", async (req, res) => {
+  const { sid } = req.cookies;
+  const sessionIndex = sessions.findIndex(({ sessionID }) => sid === sessionID);
+  sessions.splice(sessionIndex, 1);
+  await writeFile("./sessionDB.json", JSON.stringify(sessions, null, 2));
+  res.status(204).end();
 });
 
 app.listen(PORT, () => {
