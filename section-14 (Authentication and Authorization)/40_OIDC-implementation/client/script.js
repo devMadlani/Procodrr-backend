@@ -19,11 +19,12 @@ logutBtn.addEventListener("click", async () => {
 const res = await fetch(`${baseURL}/profile`, {
   credentials: "include",
 });
+
 if (res.status === 401) {
   location.href = "./login";
 }
+
 const { data } = await res.json();
-console.log(data.picture);
 if (data) {
   name.textContent = data.name;
   email.textContent = data.email;
