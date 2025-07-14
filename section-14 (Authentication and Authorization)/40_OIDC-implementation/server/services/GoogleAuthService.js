@@ -26,5 +26,7 @@ export async function fetchUser(code) {
 export function generateGoogleAuthUrl() {
   return client.generateAuthUrl({
     scope: ["email", "profile", "openid"],
+    // prompt: "consent", //prompt the user for consent
+    // login_hint: "madlanidev@gmail.com", //don't show popup if match this email
   });
 }
