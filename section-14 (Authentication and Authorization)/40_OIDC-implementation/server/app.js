@@ -1,14 +1,13 @@
+import './config.js'
 import express from "express";
 import cors from "cors";
-import { fetchUser } from "./services/GoogleAuthService.js";
+import { fetchUser, generateGoogleAuthUrl } from "./services/GoogleAuthService.js";
 import { writeFile } from "fs/promises";
 import cookieParser from "cookie-parser";
 import users from "./userDB.json" with { type : "json"}
 import sessions from "./sessionDB.json" with { type : "json"}
-import dotenv from "dotenv"
 const app = express();
 const PORT = 4000;
-dotenv.config()
 app.use(
   cors({
     origin: "http://localhost:5500",
@@ -20,10 +19,8 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.get("/auth/google", async (req, res) => {
-  const clientId = process.env.CLIENT_ID
-  const redirectUrl = "http://localhost:4000/auth/google/callback";
-  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${clientId}&scope=openid email profile&redirect_uri=${redirectUrl}`;
-  res.redirect(authUrl);
+  const googleAuthUrl = generateGoogleAuthUrl()
+  res.redirect(googleAuthUrl);
   res.end();
 });
 
