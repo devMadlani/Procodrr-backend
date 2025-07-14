@@ -1,7 +1,10 @@
-import './config.js'
+import "./config.js";
 import express from "express";
 import cors from "cors";
-import { fetchUser, generateGoogleAuthUrl } from "./services/GoogleAuthService.js";
+import {
+  fetchUser,
+  generateGoogleAuthUrl,
+} from "./services/GoogleAuthService.js";
 import { writeFile } from "fs/promises";
 import cookieParser from "cookie-parser";
 import users from "./userDB.json" with { type : "json"}
@@ -19,7 +22,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.get("/auth/google", async (req, res) => {
-  const googleAuthUrl = generateGoogleAuthUrl()
+  const googleAuthUrl = generateGoogleAuthUrl();
   res.redirect(googleAuthUrl);
   res.end();
 });
@@ -31,31 +34,35 @@ app.get("/auth/google/callback", async (req, res) => {
     return res.json({ message: "Already logged in" });
   }
   const { code } = req.query;
-  const { sub, email, name, picture } = await fetchUser(code);
-  const newUer = { id: sub, email, name, picture };
-  const existinUser = users.find(({ id }) => id === sub);
-  if (existinUser) {
-    const existingSessionIndex = sessions.findIndex(
-      ({ userId }) => userId === sub
-    );
-    const sessionID = crypto.randomUUID();
+  if (code) {
+    const { sub, email, name, picture } = await fetchUser(code);
+    const newUer = { id: sub, email, name, picture };
+    const existinUser = users.find(({ id }) => id === sub);
+    if (existinUser) {
+      const existingSessionIndex = sessions.findIndex(
+        ({ userId }) => userId === sub
+      );
+      const sessionID = crypto.randomUUID();
 
-    if (existingSessionIndex === -1) {
-      sessions.push({ sessionID, userId: sub });
-    } else {
-      sessions[existingSessionIndex].sessionID = sessionID;
+      if (existingSessionIndex === -1) {
+        sessions.push({ sessionID, userId: sub });
+      } else {
+        sessions[existingSessionIndex].sessionID = sessionID;
+      }
+      await writeFile("./sessionDB.json", JSON.stringify(sessions, null, 2));
+      res.redirect(`http://localhost:5500/callback.html?sid=${sessionID}`);
+      return res.end();
     }
+    users.push(newUer);
+    await writeFile("./userDB.json", JSON.stringify(users, null, 2));
+    const sessionID = crypto.randomUUID();
+    sessions.push({ sessionID, userId: sub });
     await writeFile("./sessionDB.json", JSON.stringify(sessions, null, 2));
     res.redirect(`http://localhost:5500/callback.html?sid=${sessionID}`);
     return res.end();
+  } else {
+    res.redirect(`http://localhost:5500/callback.html?error=true`);
   }
-  users.push(newUer);
-  await writeFile("./userDB.json", JSON.stringify(users, null, 2));
-  const sessionID = crypto.randomUUID();
-  sessions.push({ sessionID, userId: sub });
-  await writeFile("./sessionDB.json", JSON.stringify(sessions, null, 2));
-  res.redirect(`http://localhost:5500/callback.html?sid=${sessionID}`);
-  return res.end();
 });
 
 app.get("/session-cookie", async (req, res) => {

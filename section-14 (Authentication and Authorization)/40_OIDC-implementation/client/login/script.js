@@ -10,4 +10,12 @@ window.addEventListener("message", async ({ data }) => {
   if (data.message === "success") {
     location.href = "/";
   }
+  if (data.message === "failure") {
+    const para = document.createElement("p");
+    para.innerText = "Something went wrong";
+    document.body.appendChild(para);
+    setTimeout(() => {
+      para.remove();
+    }, 2000);
+  }
 });
