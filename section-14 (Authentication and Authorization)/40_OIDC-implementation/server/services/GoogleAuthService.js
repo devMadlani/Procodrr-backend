@@ -1,3 +1,6 @@
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client();
 export async function fetchUser(code) {
   const clientId = process.env.CLIENT_ID;
   const redirectUrl = "http://localhost:4000/auth/google/callback";
@@ -12,9 +15,13 @@ export async function fetchUser(code) {
   });
 
   const data = await response.json();
-  console.log(data.id_token);
-  const userToken = data.id_token.split(".")[1];
-  const userData = JSON.parse(atob(userToken));
+
+  const loginTicket = await client.verifyIdToken({
+    idToken: data.id_token,
+    audience: clientId,
+  });
+
+  const userData = loginTicket.getPayload();
 
   return userData;
 }
