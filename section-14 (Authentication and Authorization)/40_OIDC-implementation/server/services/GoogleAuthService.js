@@ -23,6 +23,17 @@ export async function fetchUser(code) {
   return userData;
 }
 
+export async function verifyIdToken(idToken) {
+  const loginTicket = await client.verifyIdToken({
+    idToken: idToken,
+    audience: clientId,
+  });
+
+  const userData = loginTicket.getPayload();
+
+  return userData;
+}
+
 export function generateGoogleAuthUrl() {
   return client.generateAuthUrl({
     scope: ["email", "profile", "openid"],
