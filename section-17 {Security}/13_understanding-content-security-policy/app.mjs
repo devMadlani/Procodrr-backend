@@ -1,9 +1,15 @@
 import express from "express";
 import mongoose from "mongoose";
-
+import { createHash } from "crypto";
 const app = express();
 
 app.use(express.json());
+
+const hash = createHash("sha256")
+  .update(`\n        console.log("hii");\n      `)
+  .digest("base64");
+
+console.log(hash);
 
 await mongoose.connect("mongodb://localhost:27017/socialApp");
 
@@ -21,9 +27,9 @@ app.use((req, res, next) => {
     res.setHeader(
       "Content-Security-Policy",
       "default-src 'self' ; \
-      script-src 'self' 'report-sample' https://cdn.tailwindcss.com ; \
+      script-src  'self' 'sha256-793SWSLXAnEbDGc6QyzZMn12HKX5ZRbzrYyejmSR1u8=' 'report-sample'; \
       img-src 'self' https://images.unsplash.com; \
-      style-src 'self' 'unsafe-inline'; \
+      style-src 'self' ; \
       connect-src 'self';  \
       report-uri /csp-violation"
     );
