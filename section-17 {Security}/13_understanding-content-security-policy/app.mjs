@@ -21,10 +21,11 @@ app.use((req, res, next) => {
     res.setHeader(
       "Content-Security-Policy",
       "default-src 'self' ; \
-      script-src 'self' 'unsafe-inline' http://localhost:8000 https://cdn.tailwindcss.com ; \
+      script-src 'self' 'report-sample' https://cdn.tailwindcss.com ; \
       img-src 'self' https://images.unsplash.com; \
-      style-src 'unsafe-inline'; \
-      connect-src 'self'  http://localhost:8000"
+      style-src 'self' 'unsafe-inline'; \
+      connect-src 'self';  \
+      report-uri /csp-violation"
     );
   }
   next();
@@ -45,5 +46,13 @@ app.post("/posts", async (req, res) => {
   res.status(201).json(post);
 });
 
+app.post(
+  "/csp-violation",
+  express.json({ type: "application/csp-report" }),
+  async (req, res) => {
+    console.log(req.body);
+    res.end();
+  }
+);
 // Start server
 app.listen(4000, () => console.log("Server running on http://localhost:4000"));
