@@ -1,15 +1,16 @@
 import express from "express";
 import mongoose from "mongoose";
 import { createHash } from "crypto";
+import crypto from "crypto";
 const app = express();
-
+import { readFile } from "fs/promises";
 app.use(express.json());
 
 const hash = createHash("sha256")
   .update(`\n        console.log("hii");\n      `)
   .digest("base64");
 
-console.log(hash);
+// console.log(hash);
 
 await mongoose.connect("mongodb://localhost:27017/socialApp");
 
@@ -22,17 +23,24 @@ const Post = mongoose.model("Post", postSchema);
 
 // Middleware
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
+  const nonce = crypto.randomBytes(16).toString("base64");
   if (req.headers.accept?.startsWith("text/html")) {
     res.setHeader(
       "Content-Security-Policy",
-      "default-src 'self' ; \
-      script-src  'self' 'sha256-793SWSLXAnEbDGc6QyzZMn12HKX5ZRbzrYyejmSR1u8=' 'report-sample'; \
+      `default-src 'self' ; \
+      script-src  'self' 'nonce-${nonce}'  'report-sample'; \
       img-src 'self' https://images.unsplash.com; \
       style-src 'self' ; \
       connect-src 'self';  \
-      report-uri /csp-violation"
+      report-uri /csp-violation`
     );
+  }
+  if (req.url === "/") {
+    const indexHTMLFile = await readFile("./public/index.html", "utf-8");
+    indexHTMLFile.replace("${nonce}", nonce);
+
+    return res.end(indexHTMLFile.replace("${nonce}", nonce));
   }
   next();
 });
