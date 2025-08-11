@@ -1,12 +1,31 @@
 import express from "express";
 import cookieParse from "cookie-parser";
-
+import { randomBytes } from "crypto";
 const app = express();
 const PORT = 4000;
 let amount = 10000;
 
 app.use(cookieParse());
+app.use(express.urlencoded({ extended: false }));
+const csrfTokens = {};
 
+function csrfProtection(req, res, next) {
+  if (!res.cookie.sid) {
+    return res.send("You are not logged <br> <a href='/login'>login</a></br>");
+  }
+  if (req.method === "GET" && req.headers?.accept?.includes("text/html")) {
+    const csrfToken = randomBytes(16).toString();
+
+    csrfToken[req.cookies.sid] = csrfToken;
+    req.csrfToken = csrfToken;
+  }
+  if (req.method == "POST") {
+    if (csrfTokens[req.cookies.sid] !== req.body.csrfToken) {
+      return res.send("Invalid CSRF Token");
+    }
+  }
+  next();
+}
 // Middleware to set CSP
 app.use((req, res, next) => {
   if (req.headers.accept?.includes("text/html")) {
@@ -21,10 +40,14 @@ app.use((req, res, next) => {
 });
 
 // Serve dynamic HTML
-app.get("/", (req, res) => {
-  if (!req.cookies.sid) {
-    return res.send('You are not logged <br> <a href="/login">Login</a>');
+app.get("/", csrfProtection, (req, res) => {
+  if (!res.cookie.sid) {
+    return res.send("You are not logged <br> <a href='/login'>login</a></br>");
   }
+  res.cookie("csrfToken", csrfToken, {
+    httpOnly: true,
+  });
+
   res.send(`
     <!DOCTYPE html>
     <html>
@@ -35,6 +58,7 @@ app.get("/", (req, res) => {
     <body>
       <h1>Amount: ₹<span id="amount">${amount}</span></h1>
       <form method="POST" action="/pay">
+      <input name="csrfToken" value="${req.csrfToken}" hidden/>
         <button type="submit">Pay</button>
       </form>
     </body>
@@ -43,16 +67,15 @@ app.get("/", (req, res) => {
 });
 
 // Handle payment
-app.post("/pay", (req, res) => {
-  if (!req.cookies.sid) {
-    return res.send("You are not logged.");
-  }
+app.post("/pay", csrfProtection, (req, res) => {
   amount -= 1000;
   res.redirect("/");
 });
 
 app.get("/login", (req, res) => {
-  res.cookie("sid", "54321", {
+  const sid = randomBytes(16).toString();
+
+  res.cookie("sid", sid, {
     httpOnly: true,
     sameSite: "none",
     secure: true,
@@ -61,5 +84,5 @@ app.get("/login", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Visit http://localhost:${PORT}`);
+  console.log(`Visit http://localhost:${PORT}`);
 });
