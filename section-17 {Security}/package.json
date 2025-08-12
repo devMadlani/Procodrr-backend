@@ -5,6 +5,7 @@
     "cors": "^2.8.5",
     "dompurify": "^3.2.6",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.0.1",
     "jsdom": "^26.1.0",
     "mongoose": "^8.17.0",
     "zod": "^4.0.14"
