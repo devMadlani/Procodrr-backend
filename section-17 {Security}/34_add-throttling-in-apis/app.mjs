@@ -1,6 +1,7 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import { rateLimit } from "express-rate-limit";
+import { slowDown } from "express-slow-down";
 
 const app = express();
 const PORT = 4000;
@@ -11,6 +12,11 @@ const limiter = rateLimit({
   standardHeaders: "draft-8",
   legacyHeaders: false,
 });
+
+// const throttle = slowDown({
+//   windowMs: 5000,
+//   delayMs: (hits) => hits * 1000,
+// });
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -37,9 +43,10 @@ function throttle(waitTime = 1000) {
     setTimeout(next, delay);
   };
 }
-app.use(limiter, throttle(2000));
+app.use(limiter);
+app.use(throttle());
 
-app.get("/", throttle(2000), (req, res) => {
+app.get("/", (req, res) => {
   res.send("<h1>Hello World!</h1>");
 });
 
