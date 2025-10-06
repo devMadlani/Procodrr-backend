@@ -1,8 +1,8 @@
 import express from "express";
-import data from "./courses.json" with { type: "json" };
+import courses from "./courses.json" with { type: "json" };
+import orders from "./orders.json" with { type: "json" };
 import cors from "cors";
 import Razorpay from "razorpay";
-import orders from "./orders.json" with { type: "json" };
 import { writeFile } from "node:fs/promises";
 
 // const rzpInstance = new Razorpay({
@@ -23,11 +23,12 @@ app.use(
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.json(data);
+  res.json(courses);
 });
 
 app.post("/create-order", async (req, res) => {
-  const { id, name, price } = req.body;
+  const { id } = req.body;
+  const { price, name } = courses.find((course) => course.id === id);
 
   // const existingOrder = orders.find()
 

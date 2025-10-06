@@ -31,17 +31,19 @@ export default function CourseCard({
       </div>
 
       {/* Modal */}
-      <CheckoutModal
-        open={open}
-        onClose={(message) => {
-          setToastMessage(message);
-          setTimeout(() => {
-            setToastMessage("");
-          }, 5000);
-          setOpen(false);
-        }}
-        course={{ id, name, price, image }}
-      />
+      {open && (
+        <CheckoutModal
+          open={open}
+          onClose={(message) => {
+            setToastMessage(message);
+            setTimeout(() => {
+              setToastMessage("");
+            }, 5000);
+            setOpen(false);
+          }}
+          course={{ id, name, price, image }}
+        />
+      )}
     </div>
   );
 }
